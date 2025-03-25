@@ -5,7 +5,7 @@ def scrape_favikon_tiktok_influencers():
     url = "https://www.favikon.com/blog/top-10-most-followed-tiktok-influencers"
     response = requests.get(url)
     response.encoding = 'utf-8'
-    response.raise_for_status()  # W razie błędów HTTP przerwie skrypt
+    response.raise_for_status()  
 
     soup = BeautifulSoup(response.text, "html.parser")
 
@@ -32,7 +32,7 @@ def scrape_favikon_tiktok_influencers():
             name_text = h3.get_text()
             tiktok_url = a_tag["href"]
 
-            # 2) Zbierz wszystkie rodzeństwa (next siblings) aż do kolejnego <h3> lub końca
+            
             paragraphs = []
             next_el = h3.next_sibling
             while next_el:
@@ -54,12 +54,10 @@ def scrape_favikon_tiktok_influencers():
                 text = p.get_text(strip=True)
 
                 if "Followers on TikTok" in text:
-                    # <em>Followers on TikTok : </em><strong>74.8 M</strong>
                     strong = p.find("strong")
                     if strong:
                         followers = strong.get_text(strip=True)
                 elif "Favikon Authority Score" in text:
-                    # <em>Favikon Authority Score</em> :<strong> 9 591 pts</strong>
                     strong = p.find("strong")
                     if strong:
                         score = strong.get_text(strip=True)
@@ -71,7 +69,6 @@ def scrape_favikon_tiktok_influencers():
                     # Zakładamy, że to opis
                     description_parts.append(text)
 
-            # Złącz opis w całość
             description = "\n\n".join(description_parts) if description_parts else "Brak opisu"
 
             # 4) Zapisz do pliku .md
